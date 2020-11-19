@@ -1,8 +1,6 @@
 import numpy as np
 import pandas as pd
-import plotly.graph_objects as go
 import plotly.express as px
-import plotly.graph_objects as go
 import plotly.figure_factory as ff
 import dash
 import dash_core_components as dcc
