@@ -102,7 +102,7 @@ fig6.update(layout=dict(title=dict(x=0.5)))
 fig6.update_layout(showlegend=False)
 
 app = Dash(__name__, external_stylesheets=external_stylesheets)
-
+server = app.server
 
 app.layout = html.Div(
     [
