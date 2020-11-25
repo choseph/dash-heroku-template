@@ -99,37 +99,84 @@ fig6.update_layout(showlegend=False)
 
 
 app = Dash(__name__, external_stylesheets=external_stylesheets)
-#server = app.server
+
 
 app.layout = html.Div(
     [
         html.H1("Exploring the Gender Wage Gap in the United States"),
         
-        dcc.Markdown(children = "Hello"),
+        dcc.Markdown(children = "put text here for later"),
         
-        html.H2("Table Summary Statistics by Gender"),
+        html.H2("Comparing Trump and Biden Voters"),
         
         dcc.Graph(figure=table2),
         
-        html.H2("Barplot of Responses to: It is much better for everyone involved if the man is the achiever outside the home and the woman takes care of the home and family."),
+        
+        html.H2("Feeling Thermometer Scatterplot"),
+        
+        html.Div([
+            
+            html.H3("Variable"),
+            
+            dcc.Dropdown(id='variable',
+                         options=[{'label': i, 'value': i} for i in ['satjob', 'relationship', 'male_breadwinner', 'men_bettersuited', 'child_suffer','men_overwork']],
+                         value='male_breadwinner'),
+            
+            html.H3("Group By:"),
+            
+            dcc.Dropdown(id='groupby',
+                         options=[{'label': i, 'value': i} for i in ['sex', 'region','education']],
+                         value='sex'),
+        
+        ], style={'width': '25%', 'float': 'left'}),
+        
+        html.Div([
+            
+            dcc.Graph(id="graph")
+        
+        ], style={'width': '70%', 'float': 'right'}),
+        
+        
+        html.H2("Vote Choice By Party"),
         
         dcc.Graph(figure=fig3),
         
         html.H2("Distribution of Support for Political Figures"),
-    
+        
         dcc.Graph(figure=fig4),
         
-        html.H2("Distribution of Support for Political Figures"),
-    
-        dcc.Graph(figure=fig5_a),
-        dcc.Graph(figure=fig5_b),
+        html.Div([
+            
+            html.H2("Vote Choice By State"),
+            
+            dcc.Graph(figure=fig5_a)
+            
+        ], style = {'width':'48%', 'float':'left'}),
         
-        html.H2("Distribution of Support for Political Figures"),
-    
-        dcc.Graph(figure=fig6)
+        html.Div([
+            
+            html.H2("Support by Age Group"),
+            
+            dcc.Graph(figure=fig6)
+            
+        ], style = {'width':'48%', 'float':'right'}),
     
     ]
 )
+@app.callback(Output(component_id="graph",component_property="figure"), 
+                  [Input(component_id='variable',component_property="value"),
+                   Input(component_id='groupby',component_property="value")])
+
+def make_figure(x, y):  
+    table3 = gss_clean.groupby([y, x]).count().reset_index()
+    table3 = table3.rename({'id':'count'}, axis = 1)
+    return px.bar(table3, x=x, y='count', color = y,
+             hover_data = [x],
+             barmode = 'group')
+
+
+if __name__ == '__main__':
+    app.run_server(mode='inline', debug=True, port=8050)
 
 if __name__ == '__main__':
     app.run_server(debug=False)
