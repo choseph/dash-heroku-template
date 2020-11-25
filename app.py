@@ -8,10 +8,10 @@ import dash_html_components as html
 from dash.dependencies import Input, Output
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
-#%%capture
 gss = pd.read_csv("https://github.com/jkropko/DS-6001/raw/master/localdata/gss2018.csv",
                  encoding='cp1252', na_values=['IAP','IAP,DK,NA,uncodeable', 'NOT SURE',
-                                               'DK', 'IAP, DK, NA, uncodeable', '.a', "CAN'T CHOOSE"])
+                                               'DK', 'IAP, DK, NA, uncodeable', '.a', "CAN'T CHOOSE"], low_memory=False)
+
 mycols = ['id', 'wtss', 'sex', 'educ', 'region', 'age', 'coninc',
           'prestg10', 'mapres10', 'papres10', 'sei10', 'satjob',
           'fechld', 'fefam', 'fepol', 'fepresch', 'meovrwrk'] 
@@ -32,6 +32,10 @@ gss_clean = gss_clean.rename({'wtss':'weight',
                               'meovrwrk':'men_overwork'},axis=1)
 gss_clean.age = gss_clean.age.replace({'89 or older':'89'})
 gss_clean.age = gss_clean.age.astype('float')
+
+paragraph1 = "Many studies have been devoted to explaining the existing wage gap between men and women in the United States. A variety of measures are consistent in revealing that there is discrimination based on gender however these measures fail to gauge the full effects of discrimination due to the complexity of this issue. The data generally fail to capture the amount of opportunities denied for women, so a complete analysis is not possible. Nonetheless, analyzing available data is a good starting point."
+paragraph2 = "The NORC GSS is an organization that collects data on Americans in hopes to study and analyze certain trends, attitudes, and behaviors. This data contains questions pertaining to demography, behavior, and miscellaneous topics. This data allows scholars to monitor social change in the United states by examining the characteristics of certain subgroups and comparing responses to other countries. To ensure that the data is of the highest quality, GSS deploys transparent and advanced survey methods. "
+sources = "Sources: [Gender gap source](https://www.epi.org/publication/what-is-the-gender-pay-gap-and-is-it-real/), [GSS Source] (https://gss.norc.org/About-The-GSS)"
 
 table2 = gss_clean[['income', 'job_prestige', 'socioeconomic_index', 'education', 'sex']].groupby('sex').mean().round(2).reset_index()
 table2 = ff.create_table(table2)
@@ -97,7 +101,6 @@ fig6 = px.box(table6, x = 'income', y = 'sex', color = 'sex',
 fig6.update(layout=dict(title=dict(x=0.5)))
 fig6.update_layout(showlegend=False)
 
-
 app = Dash(__name__, external_stylesheets=external_stylesheets)
 
 
@@ -105,7 +108,9 @@ app.layout = html.Div(
     [
         html.H1("Exploring the Gender Wage Gap in the United States"),
         
-        dcc.Markdown(children = "put text here for later"),
+        dcc.Markdown(children = paragraph1),
+        dcc.Markdown(children = paragraph2),
+        dcc.Markdown(children = sources),
         
         html.H2("Comparing Trump and Biden Voters"),
         
@@ -176,7 +181,4 @@ def make_figure(x, y):
 
 
 if __name__ == '__main__':
-    app.run_server(mode='inline', debug=True, port=8050)
-
-if __name__ == '__main__':
-    app.run_server(debug=False)
+    app.run_server(mode='inline', debug=True, port=8054)
