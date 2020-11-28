@@ -6,7 +6,9 @@ from dash import Dash
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
+
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+
 
 gss = pd.read_csv("https://github.com/jkropko/DS-6001/raw/master/localdata/gss2018.csv",
                  encoding='cp1252', na_values=['IAP','IAP,DK,NA,uncodeable', 'NOT SURE',
@@ -100,9 +102,18 @@ fig6 = px.box(table6, x = 'income', y = 'sex', color = 'sex',
 
 fig6.update(layout=dict(title=dict(x=0.5)))
 fig6.update_layout(showlegend=False)
+#fig6.update_layout({'plot_bgcolor': 'powderblue','paper_bgcolor': 'powderblue'})
+#fig1.update_layout({'paper_bgcolor': 'powderblue'})
+#fig2.update_layout({'paper_bgcolor': 'powderblue'})
+fig3.update_layout({'paper_bgcolor': 'powderblue'})
+fig4.update_layout({'paper_bgcolor': 'powderblue'})
+fig5_a.update_layout({'paper_bgcolor': 'powderblue'})
+fig5_b.update_layout({'paper_bgcolor': 'powderblue'})
+fig6.update_layout({'paper_bgcolor': 'powderblue'})
+#graph.update_layout({'paper_bgcolor': 'powderblue'})
 
 app = Dash(__name__, external_stylesheets=external_stylesheets)
-server = app.server
+
 
 app.layout = html.Div(
     [
@@ -144,9 +155,9 @@ app.layout = html.Div(
         
         html.H2("Vote Choice By Party"),
         
-        dcc.Graph(figure=fig3),
+        #dcc.Graph(figure=fig3),
         
-        html.H2("Distribution of Support for Political Figures"),
+        html.H2("Distribution of Support for Political Figures", style ={'padding-top':'150px'}),
         
         dcc.Graph(figure=fig4),
         
@@ -156,7 +167,7 @@ app.layout = html.Div(
             
             dcc.Graph(figure=fig5_a)
             
-        ], style = {'width':'48%', 'float':'left'}),
+        ], style = {'width':'50%', 'float':'left','background-color':'powderblue'}),
         
         html.Div([
             
@@ -164,9 +175,9 @@ app.layout = html.Div(
             
             dcc.Graph(figure=fig6)
             
-        ], style = {'width':'48%', 'float':'right'}),
+        ], style = {'width':'50%', 'float':'right','background-color':'powderblue'}),
     
-    ]
+    ], style = {'background-color':'powderblue','font-family':'Courier New'}
 )
 @app.callback(Output(component_id="graph",component_property="figure"), 
                   [Input(component_id='variable',component_property="value"),
@@ -175,9 +186,11 @@ app.layout = html.Div(
 def make_figure(x, y):  
     table3 = gss_clean.groupby([y, x]).count().reset_index()
     table3 = table3.rename({'id':'count'}, axis = 1)
-    return px.bar(table3, x=x, y='count', color = y,
+    tempfigure = px.bar(table3, x=x, y='count', color = y,
              hover_data = [x],
              barmode = 'group')
+    tempfigure.update_layout({'paper_bgcolor': 'powderblue'})
+    return tempfigure
 
 
 if __name__ == '__main__':
