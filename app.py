@@ -6,6 +6,7 @@ from dash import Dash
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
+import dash_bootstrap_components as dbc
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
@@ -102,37 +103,34 @@ fig6 = px.box(table6, x = 'income', y = 'sex', color = 'sex',
 
 fig6.update(layout=dict(title=dict(x=0.5)))
 fig6.update_layout(showlegend=False)
-#fig6.update_layout({'plot_bgcolor': 'powderblue','paper_bgcolor': 'powderblue'})
-#fig1.update_layout({'paper_bgcolor': 'powderblue'})
-#fig2.update_layout({'paper_bgcolor': 'powderblue'})
 fig3.update_layout({'paper_bgcolor': 'powderblue'})
 fig4.update_layout({'paper_bgcolor': 'powderblue'})
 fig5_a.update_layout({'paper_bgcolor': 'powderblue'})
 fig5_b.update_layout({'paper_bgcolor': 'powderblue'})
 fig6.update_layout({'paper_bgcolor': 'powderblue'})
-#graph.update_layout({'paper_bgcolor': 'powderblue'})
+
 
 app = Dash(__name__, external_stylesheets=external_stylesheets)
-server = app.server
+server= app.server
 
 app.layout = html.Div(
     [
-        html.H1("Exploring the Gender Wage Gap in the United States"),
+        html.H1("Exploring the Gender Wage Gap in the United States",style = {'font-weight':'bold'}),
         
         dcc.Markdown(children = paragraph1),
         dcc.Markdown(children = paragraph2),
         dcc.Markdown(children = sources),
         
-        html.H2("Comparing Trump and Biden Voters"),
+        html.H2("Comparing Men and Women",style = {'text-decoration':'underline'}),
         
         dcc.Graph(figure=table2),
         
         
-        html.H2("Feeling Thermometer Scatterplot"),
+        html.H2("Responses to Various Questions",style = {'text-decoration':'underline'}),
         
         html.Div([
             
-            html.H3("Variable"),
+            html.H3("Question"),
             
             dcc.Dropdown(id='variable',
                          options=[{'label': i, 'value': i} for i in ['satjob', 'relationship', 'male_breadwinner', 'men_bettersuited', 'child_suffer','men_overwork']],
@@ -152,30 +150,17 @@ app.layout = html.Div(
         
         ], style={'width': '70%', 'float': 'right'}),
         
-        
-        html.H2("Vote Choice By Party"),
-        
-        #dcc.Graph(figure=fig3),
-        
-        html.H2("Distribution of Support for Political Figures", style ={'padding-top':'150px'}),
-        
-        dcc.Graph(figure=fig4),
-        
         html.Div([
-            
-            html.H2("Vote Choice By State"),
-            
-            dcc.Graph(figure=fig5_a)
-            
-        ], style = {'width':'50%', 'float':'left','background-color':'powderblue'}),
-        
-        html.Div([
-            
-            html.H2("Support by Age Group"),
-            
-            dcc.Graph(figure=fig6)
-            
-        ], style = {'width':'50%', 'float':'right','background-color':'powderblue'}),
+            html.H2("Alternative Methods of Visualization",style = {'text-decoration':'underline'}),
+            dbc.Col([
+                html.Div([
+                    dcc.Tabs(id='tabs-example', value='tab-1', children=[
+                        dcc.Tab(label='Scatterplot', value='tab-1'),
+                        dcc.Tab(label='Boxplots', value='tab-2'),
+                    ]),
+                html.Div(id='tabs-example-content')
+                ])
+            ])],style = {'padding-top':'450px'})
     
     ], style = {'background-color':'powderblue','font-family':'Courier New'}
 )
@@ -192,6 +177,18 @@ def make_figure(x, y):
     tempfigure.update_layout({'paper_bgcolor': 'powderblue'})
     return tempfigure
 
+@app.callback(Output('tabs-example-content', 'children'),
+              [Input('tabs-example', 'value')])
+
+def render_content(tab):
+    if tab == 'tab-1':
+        return html.Div([html.H3('Scatterplot of Annual Income Against Job Prestige for Each Gender'),dcc.Graph(id= 'graph1', figure = fig4)])
+    elif tab == 'tab-2':
+        return html.Div([html.Div([html.H2("Distribution of Annual Income by Gender"),dcc.Graph(figure=fig5_a)], style = {'width':'50%', 'float':'left','background-color':'powderblue'}),
+            html.Div([
+            html.H2("Distribution of Incomes binned by Job Prestige For Each Gender"),            
+            dcc.Graph(figure=fig6)], style = {'width':'50%', 'float':'right','background-color':'powderblue'})])
+    
 
 if __name__ == '__main__':
     app.run_server(mode='inline', debug=True, port=8054)
