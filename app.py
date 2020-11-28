@@ -116,7 +116,8 @@ server= app.server
 app.layout = html.Div(
     [
         html.H1("Exploring the Gender Wage Gap in the United States",style = {'font-weight':'bold'}),
-        
+        html.H1("By: Joe Cho",style = {'font-weight':'bold'}),
+      
         dcc.Markdown(children = paragraph1),
         dcc.Markdown(children = paragraph2),
         dcc.Markdown(children = sources),
