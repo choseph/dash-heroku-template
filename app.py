@@ -113,7 +113,7 @@ fig6.update_layout({'paper_bgcolor': 'powderblue'})
 #graph.update_layout({'paper_bgcolor': 'powderblue'})
 
 app = Dash(__name__, external_stylesheets=external_stylesheets)
-
+server = app.server
 
 app.layout = html.Div(
     [
