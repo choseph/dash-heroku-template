@@ -182,7 +182,7 @@ def make_figure(x, y):
 
 def render_content(tab):
     if tab == 'tab-1':
-        return html.Div([html.H3('Scatterplot of Annual Income Against Job Prestige for Each Gender'),dcc.Graph(id= 'graph1', figure = fig4)])
+        return html.Div([html.H3('Scatterplot of Annual Income Against Job Prestige for Each Gender'),dcc.Graph(id= 'graph1', figure = fig4)],style = {'float':'center'})
     elif tab == 'tab-2':
         return html.Div([html.Div([html.H2("Distribution of Annual Income by Gender"),dcc.Graph(figure=fig5_a)], style = {'width':'50%', 'float':'left','background-color':'powderblue'}),
             html.Div([
